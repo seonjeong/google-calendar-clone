@@ -3,6 +3,7 @@ import React from 'react';
 import moment from 'moment';
 
 import { Calendar } from '../components/Calendar';
+import { Schedule } from '../components/Schedule';
 
 const ScheduleCalendar: NextPage = ({}) => {
   const [selectedDate, setSelectedDate] = React.useState(
@@ -26,6 +27,7 @@ const ScheduleCalendar: NextPage = ({}) => {
 
   return (
     <>
+      <Schedule selectedDate={selectedDate} />
       <Calendar
         selectedDate={selectedDate}
         setPrevMonth={setPrevMonth}
