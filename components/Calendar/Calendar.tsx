@@ -64,6 +64,31 @@ const Calendar = ({
     return daySchedules;
   };
 
+  const getScheduleFromConvert = (date: string, schedules: ISchedules) => {
+    const convertSchedule = (schedules: ISchedules) => {
+      return schedules.reduce(
+        (acc: { [date: string]: ISchedules }, schedule: ISchedule) => {
+          const date: string | null = schedule.start.date;
+
+          if (!acc[date]) {
+            acc[date] = [];
+          }
+          acc[date] = [...acc[date], schedule];
+          return acc;
+        },
+        {}
+      );
+    };
+
+    const [daySchedules] = Object.entries(convertSchedule(schedules))
+      .filter(([converDate, schedule]) => {
+        return converDate === date;
+      })
+      .map(([date, schedule]) => schedule);
+
+    return daySchedules;
+  };
+
   const getDays = () => {
     let days: (number | null)[] = [];
 
@@ -79,7 +104,7 @@ const Calendar = ({
     return days.map((item: number | null) => {
       const daySchedules: ISchedules =
         item !== null
-          ? getScheduleFromArray(
+          ? getScheduleFromConvert(
               moment(`${selected.year}-${selected.month + 1}-${item}`).format(
                 'YYYY-MM-DD'
               ),
