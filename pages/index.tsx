@@ -33,8 +33,6 @@ const ScheduleCalendar: NextPage = ({}) => {
     setSchedules((schedules) => [...schedules, schedule]);
   };
 
-  console.log(schedules);
-
   return (
     <>
       <Schedule selectedDate={selectedDate} addSchedule={addSchedule} />
@@ -42,6 +40,7 @@ const ScheduleCalendar: NextPage = ({}) => {
         selectedDate={selectedDate}
         setPrevMonth={setPrevMonth}
         setNextMonth={setNextMonth}
+        schedules={schedules}
       />
     </>
   );

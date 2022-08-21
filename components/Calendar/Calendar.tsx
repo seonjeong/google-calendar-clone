@@ -1,16 +1,20 @@
 import React from 'react';
 import moment from 'moment';
 
+import { ISchedule, ISchedules } from '../Schedule';
+
 export interface CalendarProps {
   selectedDate: string;
   setPrevMonth: VoidFunction;
   setNextMonth: VoidFunction;
+  schedules: ISchedules;
 }
 
 const Calendar = ({
   selectedDate,
   setPrevMonth,
   setNextMonth,
+  schedules,
 }: CalendarProps) => {
   const selected = {
     year: moment(selectedDate).year(),
@@ -66,7 +70,27 @@ const Calendar = ({
     });
 
     return days.map((item: number | null) => {
-      return <div className={'box'}>{item}</div>;
+      const getScheduleFromArray = () => {
+        const date = moment(
+          `${selected.year}-${selected.month + 1}-${item}`
+        ).format('YYYY-MM-DD');
+        const daySchedules = schedules.filter((schedule: ISchedule) => {
+          return schedule.start.date === date;
+        });
+        return daySchedules;
+      };
+
+      const daySchedules = item !== null ? getScheduleFromArray() : [];
+
+      return (
+        <div className={'box'}>
+          {item}
+          {daySchedules &&
+            daySchedules.map((daySchedule) => {
+              return <div className='dayschedule'>{daySchedule?.title}</div>;
+            })}
+        </div>
+      );
     });
   };
 
