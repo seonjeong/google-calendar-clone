@@ -103,6 +103,51 @@ const Calendar = ({
     return daySchedules;
   };
 
+  const getScheduleRangeFromConvert = (date: string, schedules: ISchedules) => {
+    interface dateTime {
+      date: string;
+      time: string;
+    }
+    const getId = (start: dateTime, end: dateTime) => {
+      return `${start.date}=${start.time}+${end.date}=${end.time}`;
+    };
+
+    const convertSchedule = (schedules: ISchedules) => {
+      return schedules.reduce(
+        (acc: { [id: string]: ISchedule }, schedule: ISchedule) => {
+          const id = getId(schedule.start, schedule.end);
+          acc[id] = schedule;
+          return acc;
+        },
+        {}
+      );
+    };
+
+    const convertRange = () => {
+      return Array.from({ length: 31 }, (_, i) =>
+        moment(`${selected.year}-${selected.month + 1}-${i + 1}`).format(
+          'YYYY-MM-DD'
+        )
+      ).reduce((acc: { [id: string]: string[] }, date: string) => {
+        acc[date] = Object.entries(convertSchedule(schedules))
+          .filter(([idDate, schedule]) => {
+            return getIsInclude(schedule.start.date, schedule.end.date, date);
+          })
+          .map(([idDate]) => idDate);
+        return acc;
+      }, {});
+    };
+
+    const covertedSchedule = convertSchedule(schedules) || {};
+    const covertedRange = convertRange() || {};
+
+    const daySchedules = covertedRange[date]?.map((date) => {
+      return covertedSchedule[date];
+    });
+
+    return daySchedules;
+  };
+
   const getDays = () => {
     let days: (number | null)[] = [];
 
@@ -118,7 +163,7 @@ const Calendar = ({
     return days.map((item: number | null) => {
       const daySchedules: ISchedules =
         item !== null
-          ? getScheduleRangeFromArray(
+          ? getScheduleRangeFromConvert(
               moment(`${selected.year}-${selected.month + 1}-${item}`).format(
                 'YYYY-MM-DD'
               ),
