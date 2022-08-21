@@ -5,6 +5,8 @@ import moment from 'moment';
 import { Calendar } from '../components/Calendar';
 import { Schedule } from '../components/Schedule';
 
+import type { ISchedule, ISchedules } from '../components/Schedule';
+
 const ScheduleCalendar: NextPage = ({}) => {
   const [selectedDate, setSelectedDate] = React.useState(
     moment(new Date()).format('YYYY-MM-DD')
@@ -25,9 +27,17 @@ const ScheduleCalendar: NextPage = ({}) => {
     setSelectedDate(nextMonth);
   };
 
+  const [schedules, setSchedules] = React.useState([]);
+
+  const addSchedule = (schedule: ISchedule): void => {
+    setSchedules((schedules) => [...schedules, schedule]);
+  };
+
+  console.log(schedules);
+
   return (
     <>
-      <Schedule selectedDate={selectedDate} />
+      <Schedule selectedDate={selectedDate} addSchedule={addSchedule} />
       <Calendar
         selectedDate={selectedDate}
         setPrevMonth={setPrevMonth}

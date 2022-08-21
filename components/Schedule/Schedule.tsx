@@ -18,9 +18,10 @@ export type ISchedules = ISchedule[];
 
 export interface ScheduleProps {
   selectedDate: string;
+  addSchedule: (schedule: ISchedule) => VoidFunction;
 }
 
-const Schedule = ({ selectedDate }: ScheduleProps) => {
+const Schedule = ({ selectedDate, addSchedule }: ScheduleProps) => {
   const [title, setTtile] = React.useState('');
 
   const [start, setStart] = React.useState({
@@ -83,7 +84,17 @@ const Schedule = ({ selectedDate }: ScheduleProps) => {
           setDescription(e.target.value);
         }}
       ></textarea>
-      <button className='btn default-style btn-primary' onClick={() => {}}>
+      <button
+        className='btn default-style btn-primary'
+        onClick={() => {
+          addSchedule({
+            title,
+            description,
+            start,
+            end,
+          });
+        }}
+      >
         추가
       </button>
     </>
