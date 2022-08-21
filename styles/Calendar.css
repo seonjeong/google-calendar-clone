@@ -1,0 +1,26 @@
+/* calendar */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 56px;
+}
+.box {
+  border: 1px solid red;
+  float: left;
+  width: calc(100% / 7);
+  height: 100px;
+}
+.week {
+  border: 1px solid red;
+  float: left;
+  width: calc(100% / 7);
+  height: 36px;
+}
+
+/* schedule with calendar */
+.dayschedule {
+  background: #d0d0d0;
+  border-radius: 4px;
+  margin: 2px;
+}

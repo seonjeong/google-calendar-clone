@@ -1,0 +1,10 @@
+.ui-input,
+.ui-textarea {
+  width: 100%;
+  border: 1px solid black;
+}
+.btn {
+  height: 40px;
+  width: 100%;
+  border: 1px solid #000;
+}
