@@ -8,6 +8,7 @@ export interface CalendarProps {
   setPrevMonth: VoidFunction;
   setNextMonth: VoidFunction;
   schedules: ISchedules;
+  openEditShechedule: VoidFunction;
 }
 
 const Calendar = ({
@@ -15,6 +16,7 @@ const Calendar = ({
   setPrevMonth,
   setNextMonth,
   schedules,
+  openEditShechedule,
 }: CalendarProps) => {
   const selected = {
     year: moment(selectedDate).year(),
@@ -142,7 +144,7 @@ const Calendar = ({
     const covertedRange = convertRange() || {};
 
     const daySchedules = covertedRange[date]?.map((date) => {
-      return covertedSchedule[date];
+      return { [date]: covertedSchedule[date] };
     });
 
     return daySchedules;
@@ -161,7 +163,7 @@ const Calendar = ({
     });
 
     return days.map((item: number | null) => {
-      const daySchedules: ISchedules =
+      const daySchedules: { [date: string]: ISchedule }[] =
         item !== null
           ? getScheduleRangeFromConvert(
               moment(`${selected.year}-${selected.month + 1}-${item}`).format(
@@ -176,7 +178,18 @@ const Calendar = ({
           {item}
           {daySchedules &&
             daySchedules.map((daySchedule) => {
-              return <div className='dayschedule'>{daySchedule?.title}</div>;
+              const [[id, schedule]] = Object.entries(daySchedule);
+
+              return (
+                <div
+                  className='dayschedule'
+                  onClick={() => {
+                    openEditShechedule(id);
+                  }}
+                >
+                  {schedule?.title}
+                </div>
+              );
             })}
         </div>
       );

@@ -1,38 +1,55 @@
 import React from 'react';
 import moment from 'moment';
 
-export interface IDateTime {
-  date: string;
-  time: string;
+import { IDateTime, ISchedule, ISchedules } from '.';
+
+export interface EditScheduleProps {
+  isShow: boolean;
+  id: string;
+  schedules: ISchedules[];
+  getId: VoidFunction;
+  editSchedule: VoidFunction;
 }
 
-export interface ISchedule {
-  title: string;
-  description: string;
-  start: IDateTime;
-  end: IDateTime;
-}
+const EditSchedule = ({
+  isShow,
+  id,
+  schedules,
+  getId,
+  editSchedule,
+}: EditScheduleProps) => {
+  if (!isShow) return null;
 
-export type ISchedules = ISchedule[];
+  if (!id) return null;
 
-export interface ScheduleProps {
-  selectedDate: string;
-  addSchedule: (schedule: ISchedule) => VoidFunction;
-}
+  const schedule: ISchedule = schedules.find((schedule: ISchedule) => {
+    return getId(schedule.start, schedule.end) === id;
+  }) || {
+    start: {
+      date: '',
+      time: '',
+    },
+    end: {
+      date: '',
+      time: '',
+    },
+    title: '',
+    description: '',
+  };
 
-const Schedule = ({ selectedDate, addSchedule }: ScheduleProps) => {
-  const [title, setTtile] = React.useState('');
+  const [title, setTtile] = React.useState(schedule.title);
 
   const [start, setStart] = React.useState({
-    date: moment(selectedDate).format('YYYY-MM-DD'),
-    time: '00:00:00',
+    date: moment(schedule.start.date).format('YYYY-MM-DD'),
+    time: schedule.start.time,
   });
   const [end, setEnd] = React.useState({
-    date: moment(selectedDate).format('YYYY-MM-DD'),
-    time: '01:00:00',
+    date: moment(schedule.end.date).format('YYYY-MM-DD'),
+    time: schedule.end.time,
   });
 
-  const [description, setDescription] = React.useState('');
+  const [description, setDescription] = React.useState(schedule.description);
+
   return (
     <>
       <input
@@ -86,7 +103,7 @@ const Schedule = ({ selectedDate, addSchedule }: ScheduleProps) => {
       <button
         className='btn default-style btn-primary'
         onClick={() => {
-          addSchedule({
+          editSchedule(id, {
             title,
             description,
             start,
@@ -94,10 +111,25 @@ const Schedule = ({ selectedDate, addSchedule }: ScheduleProps) => {
           });
         }}
       >
-        추가
+        수정
       </button>
     </>
   );
 };
 
-export default Schedule;
+EditSchedule.defaultProps = {
+  schedule: {
+    start: {
+      date: '',
+      time: '',
+    },
+    end: {
+      date: '',
+      time: '',
+    },
+    title: '',
+    description: '',
+  },
+};
+
+export default EditSchedule;

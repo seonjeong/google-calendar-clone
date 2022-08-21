@@ -1,5 +1,6 @@
 import Schedule from './Schedule';
-import type { ISchedule, ISchedules } from './Schedule';
+import EditSchedule from './EditSchedule';
+import type { IDateTime, ISchedule, ISchedules } from './Schedule';
 
-export { Schedule };
-export type { ISchedule, ISchedules };
+export { Schedule, EditSchedule };
+export type { IDateTime, ISchedule, ISchedules };
