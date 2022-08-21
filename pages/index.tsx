@@ -1,9 +1,38 @@
 import type { NextPage } from 'next';
-import Head from 'next/head';
-import Image from 'next/image';
+import React from 'react';
+import moment from 'moment';
 
-const Home: NextPage = () => {
-  return 'hello world';
+import { Calendar } from '../components/Calendar';
+
+const ScheduleCalendar: NextPage = ({}) => {
+  const [selectedDate, setSelectedDate] = React.useState(
+    moment(new Date()).format('YYYY-MM-DD')
+  );
+
+  const setPrevMonth = () => {
+    const prevMonth = moment(selectedDate)
+      .add(-1, 'months')
+      .set('date', 1)
+      .format('YYYY-MM-DD');
+    setSelectedDate(prevMonth);
+  };
+  const setNextMonth = () => {
+    const nextMonth = moment(selectedDate)
+      .add(1, 'months')
+      .set('date', 1)
+      .format('YYYY-MM-DD');
+    setSelectedDate(nextMonth);
+  };
+
+  return (
+    <>
+      <Calendar
+        selectedDate={selectedDate}
+        setPrevMonth={setPrevMonth}
+        setNextMonth={setNextMonth}
+      />
+    </>
+  );
 };
 
-export default Home;
+export default ScheduleCalendar;
