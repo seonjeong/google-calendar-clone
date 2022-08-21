@@ -89,6 +89,20 @@ const Calendar = ({
     return daySchedules;
   };
 
+  const getIsInclude = (start: string, end: string, date: string): boolean => {
+    return (
+      new Date(start).getTime() <= new Date(date).getTime() &&
+      new Date(end).getTime() >= new Date(date).getTime()
+    );
+  };
+
+  const getScheduleRangeFromArray = (date: string, schedules: ISchedules) => {
+    const daySchedules = schedules.filter((schedule: ISchedule) => {
+      return getIsInclude(schedule.start.date, schedule.end.date, date);
+    });
+    return daySchedules;
+  };
+
   const getDays = () => {
     let days: (number | null)[] = [];
 
@@ -104,7 +118,7 @@ const Calendar = ({
     return days.map((item: number | null) => {
       const daySchedules: ISchedules =
         item !== null
-          ? getScheduleFromConvert(
+          ? getScheduleRangeFromArray(
               moment(`${selected.year}-${selected.month + 1}-${item}`).format(
                 'YYYY-MM-DD'
               ),
