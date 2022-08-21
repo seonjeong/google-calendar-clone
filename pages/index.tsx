@@ -57,6 +57,18 @@ const ScheduleCalendar: NextPage = ({}) => {
     setSelectedSchedule(id);
   };
 
+  const deleteSchedule = (id: string) => {
+    const _schedules: ISchedules = schedules.filter((schedule: ISchedule) => {
+      if (getId(schedule.start, schedule.end) !== id) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+    setSchedules(_schedules);
+    setIsShowEdit(false);
+  };
+
   return (
     <>
       <Schedule selectedDate={selectedDate} addSchedule={addSchedule} />
@@ -73,6 +85,7 @@ const ScheduleCalendar: NextPage = ({}) => {
         schedules={schedules}
         getId={getId}
         editSchedule={editSchedule}
+        deleteSchedule={deleteSchedule}
       />
     </>
   );

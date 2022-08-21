@@ -9,6 +9,7 @@ export interface EditScheduleProps {
   schedules: ISchedules[];
   getId: VoidFunction;
   editSchedule: VoidFunction;
+  deleteSchedule: VoidFunction;
 }
 
 const EditSchedule = ({
@@ -17,6 +18,7 @@ const EditSchedule = ({
   schedules,
   getId,
   editSchedule,
+  deleteSchedule,
 }: EditScheduleProps) => {
   if (!isShow) return null;
 
@@ -112,6 +114,14 @@ const EditSchedule = ({
         }}
       >
         수정
+      </button>
+      <button
+        className='btn default-style btn-primary'
+        onClick={() => {
+          deleteSchedule(id);
+        }}
+      >
+        삭제
       </button>
     </>
   );
