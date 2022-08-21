@@ -57,6 +57,13 @@ const Calendar = ({
     });
   };
 
+  const getScheduleFromArray = (date: string, schedules: ISchedules) => {
+    const daySchedules = schedules.filter((schedule: ISchedule) => {
+      return schedule.start.date === date;
+    });
+    return daySchedules;
+  };
+
   const getDays = () => {
     let days: (number | null)[] = [];
 
@@ -70,17 +77,15 @@ const Calendar = ({
     });
 
     return days.map((item: number | null) => {
-      const getScheduleFromArray = () => {
-        const date = moment(
-          `${selected.year}-${selected.month + 1}-${item}`
-        ).format('YYYY-MM-DD');
-        const daySchedules = schedules.filter((schedule: ISchedule) => {
-          return schedule.start.date === date;
-        });
-        return daySchedules;
-      };
-
-      const daySchedules = item !== null ? getScheduleFromArray() : [];
+      const daySchedules: ISchedules =
+        item !== null
+          ? getScheduleFromArray(
+              moment(`${selected.year}-${selected.month + 1}-${item}`).format(
+                'YYYY-MM-DD'
+              ),
+              schedules
+            )
+          : [];
 
       return (
         <div className={'box'}>
