@@ -50,6 +50,7 @@ const ScheduleCalendar: NextPage = ({}) => {
         setPrevMonth={setPrevMonth}
         setNextMonth={setNextMonth}
         schedules={schedules}
+        getId={getId}
         openEditShechedule={openEditShechedule}
       />
       <EditSchedule

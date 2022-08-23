@@ -7,6 +7,7 @@ export interface CalendarProps {
   selectedDate: string;
   setPrevMonth: VoidFunction;
   setNextMonth: VoidFunction;
+  getId: VoidFunction;
   schedules: ISchedules;
   openEditShechedule: VoidFunction;
 }
@@ -15,6 +16,7 @@ const Calendar = ({
   selectedDate,
   setPrevMonth,
   setNextMonth,
+  getId,
   schedules,
   openEditShechedule,
 }: CalendarProps) => {
@@ -110,9 +112,6 @@ const Calendar = ({
       date: string;
       time: string;
     }
-    const getId = (start: dateTime, end: dateTime, i: number) => {
-      return `${start.date}=${start.time}+${end.date}=${end.time}_${i}`;
-    };
 
     const convertSchedule = (schedules: ISchedules) => {
       return schedules.reduce(
