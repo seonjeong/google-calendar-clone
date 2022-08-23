@@ -14,6 +14,8 @@ import {
   setNextMonthDate,
 } from '../store/modules/calendar';
 
+import { selectScheduleState, setSchedule } from '../store/modules/schedule';
+
 const ScheduleCalendar: NextPage = ({}) => {
   const dispatch = useDispatch();
 
@@ -26,11 +28,7 @@ const ScheduleCalendar: NextPage = ({}) => {
     dispatch(setNextMonthDate());
   };
 
-  const [schedules, setSchedules] = React.useState([]);
-
-  const addSchedule = (schedule: ISchedule): void => {
-    setSchedules((schedules) => [...schedules, schedule]);
-  };
+  const { schedules } = useSelector(selectScheduleState);
 
   const [isShowEdit, setIsShowEdit] = React.useState(false);
   const [selectedSchedule, setSelectedSchedule] = React.useState('');
@@ -64,13 +62,17 @@ const ScheduleCalendar: NextPage = ({}) => {
         return false;
       }
     });
-    setSchedules(_schedules);
+    dispatch(
+      setSchedule({
+        schedules: _schedules,
+      })
+    );
     setIsShowEdit(false);
   };
 
   return (
     <>
-      <Schedule selectedDate={selectedDate} addSchedule={addSchedule} />
+      <Schedule selectedDate={selectedDate} />
       <Calendar
         selectedDate={selectedDate}
         setPrevMonth={setPrevMonth}
