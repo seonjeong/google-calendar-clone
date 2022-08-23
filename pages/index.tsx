@@ -8,30 +8,22 @@ import { Schedule, EditSchedule } from '../components/Schedule';
 
 import type { IDateTime, ISchedule, ISchedules } from '../components/Schedule';
 
-import { selectCalendarState, setDate } from '../store/modules/calendar';
+import {
+  selectCalendarState,
+  setPrevMonthDate,
+  setNextMonthDate,
+} from '../store/modules/calendar';
 
 const ScheduleCalendar: NextPage = ({}) => {
   const dispatch = useDispatch();
 
   const { selectedDate } = useSelector(selectCalendarState);
 
-  const setSelectedDate = (date: string) => {
-    dispatch(setDate({ selectedDate: date }));
-  };
-
   const setPrevMonth = () => {
-    const prevMonth = moment(selectedDate)
-      .add(-1, 'months')
-      .set('date', 1)
-      .format('YYYY-MM-DD');
-    setSelectedDate(prevMonth);
+    dispatch(setPrevMonthDate());
   };
   const setNextMonth = () => {
-    const nextMonth = moment(selectedDate)
-      .add(1, 'months')
-      .set('date', 1)
-      .format('YYYY-MM-DD');
-    setSelectedDate(nextMonth);
+    dispatch(setNextMonthDate());
   };
 
   const [schedules, setSchedules] = React.useState([]);
