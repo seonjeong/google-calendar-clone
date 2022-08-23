@@ -29,7 +29,13 @@ const Calendar = ({
 
   const totalCount = new Date(selected.year, selected.month, 0).getDate();
 
+  const maxMonthDate = new Date(selected.year, selected.month + 1, 0).getDate();
   const firstDateDay = new Date(selected.year, selected.month, 1).getDay();
+  const lastDateDay = new Date(
+    selected.year,
+    selected.month,
+    maxMonthDate
+  ).getDay();
 
   const getHeader = () => {
     return (
@@ -113,12 +119,6 @@ const Calendar = ({
       time: string;
     }
 
-    const maxMonthDate = new Date(
-      selected.year,
-      selected.month + 1,
-      0
-    ).getDate();
-
     const convertSchedule = (schedules: ISchedules) => {
       return schedules.reduce(
         (acc: { [id: string]: ISchedule }, schedule: ISchedule, i: number) => {
@@ -170,6 +170,10 @@ const Calendar = ({
       }
       days.push(null);
     });
+
+    const startIndex = firstDateDay + maxMonthDate;
+
+    days.splice(startIndex, 7 - (lastDateDay + 1));
 
     return days.map((item: number | null) => {
       const daySchedules: { [date: string]: ISchedule }[] =
