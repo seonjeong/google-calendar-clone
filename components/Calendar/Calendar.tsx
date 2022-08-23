@@ -113,6 +113,12 @@ const Calendar = ({
       time: string;
     }
 
+    const maxMonthDate = new Date(
+      selected.year,
+      selected.month + 1,
+      0
+    ).getDate();
+
     const convertSchedule = (schedules: ISchedules) => {
       return schedules.reduce(
         (acc: { [id: string]: ISchedule }, schedule: ISchedule, i: number) => {
@@ -125,10 +131,14 @@ const Calendar = ({
     };
 
     const convertRange = () => {
-      return Array.from({ length: 31 }, (_, i) =>
-        moment(`${selected.year}-${selected.month + 1}-${i + 1}`).format(
-          'YYYY-MM-DD'
-        )
+      return Array.from(
+        {
+          length: maxMonthDate,
+        },
+        (_, i) =>
+          moment(`${selected.year}-${selected.month + 1}-${i + 1}`).format(
+            'YYYY-MM-DD'
+          )
       ).reduce((acc: { [id: string]: string[] }, date: string) => {
         acc[date] = Object.entries(convertSchedule(schedules))
           .filter(([idDate, schedule]) => {
