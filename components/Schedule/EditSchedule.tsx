@@ -10,7 +10,6 @@ export interface EditScheduleProps {
   isShow: boolean;
   id: string;
   getId: VoidFunction;
-  deleteSchedule: VoidFunction;
   setIsShowEdit: VoidFunction;
 }
 
@@ -18,7 +17,6 @@ const EditSchedule = ({
   isShow,
   id,
   getId,
-  deleteSchedule,
   setIsShowEdit,
 }: EditScheduleProps) => {
   if (!isShow) return null;
@@ -62,6 +60,22 @@ const EditSchedule = ({
         return schedule;
       } else {
         return editedSchedule;
+      }
+    });
+    dispatch(
+      setSchedule({
+        schedules: _schedules,
+      })
+    );
+    setIsShowEdit(false);
+  };
+
+  const deleteSchedule = (id: string) => {
+    const _schedules: ISchedules = schedules.filter((schedule: ISchedule) => {
+      if (getId(schedule.start, schedule.end) !== id) {
+        return true;
+      } else {
+        return false;
       }
     });
     dispatch(

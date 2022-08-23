@@ -42,22 +42,6 @@ const ScheduleCalendar: NextPage = ({}) => {
     setSelectedSchedule(id);
   };
 
-  const deleteSchedule = (id: string) => {
-    const _schedules: ISchedules = schedules.filter((schedule: ISchedule) => {
-      if (getId(schedule.start, schedule.end) !== id) {
-        return true;
-      } else {
-        return false;
-      }
-    });
-    dispatch(
-      setSchedule({
-        schedules: _schedules,
-      })
-    );
-    setIsShowEdit(false);
-  };
-
   return (
     <>
       <Schedule selectedDate={selectedDate} />
@@ -73,7 +57,6 @@ const ScheduleCalendar: NextPage = ({}) => {
         setIsShowEdit={setIsShowEdit}
         id={selectedSchedule}
         getId={getId}
-        deleteSchedule={deleteSchedule}
       />
     </>
   );
