@@ -37,18 +37,6 @@ const ScheduleCalendar: NextPage = ({}) => {
     return `${start.date}=${start.time}+${end.date}=${end.time}`;
   };
 
-  const editSchedule = (id: string, editSchedule: ISchedule): void => {
-    const _schedules: ISchedules = schedules.map((schedule: ISchedule) => {
-      if (getId(schedule.start, schedule.end) !== id) {
-        return schedule;
-      } else {
-        return editSchedule;
-      }
-    });
-    setSchedules(_schedules);
-    setIsShowEdit(false);
-  };
-
   const openEditShechedule = (id: string) => {
     setIsShowEdit(true);
     setSelectedSchedule(id);
@@ -82,10 +70,9 @@ const ScheduleCalendar: NextPage = ({}) => {
       />
       <EditSchedule
         isShow={isShowEdit}
+        setIsShowEdit={setIsShowEdit}
         id={selectedSchedule}
-        schedules={schedules}
         getId={getId}
-        editSchedule={editSchedule}
         deleteSchedule={deleteSchedule}
       />
     </>

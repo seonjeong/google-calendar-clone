@@ -1,28 +1,32 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 
 import { IDateTime, ISchedule, ISchedules } from '.';
 
+import { selectScheduleState, setSchedule } from '../../store/modules/schedule';
+
 export interface EditScheduleProps {
   isShow: boolean;
   id: string;
-  schedules: ISchedules[];
   getId: VoidFunction;
-  editSchedule: VoidFunction;
   deleteSchedule: VoidFunction;
+  setIsShowEdit: VoidFunction;
 }
 
 const EditSchedule = ({
   isShow,
   id,
-  schedules,
   getId,
-  editSchedule,
   deleteSchedule,
+  setIsShowEdit,
 }: EditScheduleProps) => {
   if (!isShow) return null;
 
   if (!id) return null;
+
+  const dispatch = useDispatch();
+  const { schedules } = useSelector(selectScheduleState);
 
   const schedule: ISchedule = schedules.find((schedule: ISchedule) => {
     return getId(schedule.start, schedule.end) === id;
@@ -51,6 +55,22 @@ const EditSchedule = ({
   });
 
   const [description, setDescription] = React.useState(schedule.description);
+
+  const editSchedule = (id: string, editedSchedule: ISchedule): void => {
+    const _schedules: ISchedules = schedules.map((schedule: ISchedule) => {
+      if (getId(schedule.start, schedule.end) !== id) {
+        return schedule;
+      } else {
+        return editedSchedule;
+      }
+    });
+    dispatch(
+      setSchedule({
+        schedules: _schedules,
+      })
+    );
+    setIsShowEdit(false);
+  };
 
   return (
     <>
