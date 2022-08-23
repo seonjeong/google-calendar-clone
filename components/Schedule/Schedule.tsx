@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import moment from 'moment';
 
-import { selectScheduleState, setSchedule } from '../../store/modules/schedule';
+import { selectScheduleState, addSchedule } from '../../store/modules/schedule';
 
 export interface IDateTime {
   date: string;
@@ -39,18 +39,15 @@ const Schedule = ({ selectedDate }: ScheduleProps) => {
 
   const [description, setDescription] = React.useState('');
 
-  const addSchedule = () => {
+  const addScheduleEvent = () => {
     dispatch(
-      setSchedule({
-        schedules: [
-          ...schedules,
-          {
-            title,
-            description,
-            start,
-            end,
-          },
-        ],
+      addSchedule({
+        schedule: {
+          title,
+          description,
+          start,
+          end,
+        },
       })
     );
   };
@@ -107,7 +104,7 @@ const Schedule = ({ selectedDate }: ScheduleProps) => {
       <button
         className='btn default-style btn-primary'
         onClick={() => {
-          addSchedule();
+          addScheduleEvent();
         }}
       >
         추가

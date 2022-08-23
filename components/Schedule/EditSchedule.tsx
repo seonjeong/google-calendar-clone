@@ -4,7 +4,11 @@ import moment from 'moment';
 
 import { IDateTime, ISchedule, ISchedules } from '.';
 
-import { selectScheduleState, setSchedule } from '../../store/modules/schedule';
+import {
+  selectScheduleState,
+  updateSchedule,
+  deleteSchedule,
+} from '../../store/modules/schedule';
 
 export interface EditScheduleProps {
   isShow: boolean;
@@ -56,37 +60,20 @@ const EditSchedule = ({
 
   const [description, setDescription] = React.useState(schedule.description);
 
-  const editSchedule = (id: string, editedSchedule: ISchedule): void => {
-    const _schedules: ISchedules = schedules.map(
-      (schedule: ISchedule, i: number) => {
-        if (getId(schedule.start, schedule.end, i) !== id) {
-          return schedule;
-        } else {
-          return editedSchedule;
-        }
-      }
-    );
+  const editScheduleEvent = (id: string, schedule: ISchedule): void => {
     dispatch(
-      setSchedule({
-        schedules: _schedules,
+      updateSchedule({
+        id,
+        schedule,
       })
     );
     setIsShowEdit(false);
   };
 
-  const deleteSchedule = (id: string) => {
-    const _schedules: ISchedules = schedules.filter(
-      (schedule: ISchedule, i: number) => {
-        if (getId(schedule.start, schedule.end, i) !== id) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-    );
+  const deleteScheduleEvent = (id: string) => {
     dispatch(
-      setSchedule({
-        schedules: _schedules,
+      deleteSchedule({
+        id,
       })
     );
     setIsShowEdit(false);
@@ -145,7 +132,7 @@ const EditSchedule = ({
       <button
         className='btn default-style btn-primary'
         onClick={() => {
-          editSchedule(id, {
+          editScheduleEvent(id, {
             title,
             description,
             start,
@@ -158,7 +145,7 @@ const EditSchedule = ({
       <button
         className='btn default-style btn-primary'
         onClick={() => {
-          deleteSchedule(id);
+          deleteScheduleEvent(id);
         }}
       >
         삭제
