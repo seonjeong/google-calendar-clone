@@ -1,5 +1,6 @@
 import type { NextPage } from 'next';
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 
 import { Calendar } from '../components/Calendar';
@@ -7,10 +8,16 @@ import { Schedule, EditSchedule } from '../components/Schedule';
 
 import type { IDateTime, ISchedule, ISchedules } from '../components/Schedule';
 
+import { selectCalendarState, setDate } from '../store/modules/calendar';
+
 const ScheduleCalendar: NextPage = ({}) => {
-  const [selectedDate, setSelectedDate] = React.useState(
-    moment(new Date()).format('YYYY-MM-DD')
-  );
+  const dispatch = useDispatch();
+
+  const { selectedDate } = useSelector(selectCalendarState);
+
+  const setSelectedDate = (date: string) => {
+    dispatch(setDate({ selectedDate: date }));
+  };
 
   const setPrevMonth = () => {
     const prevMonth = moment(selectedDate)
