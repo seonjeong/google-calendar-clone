@@ -110,14 +110,14 @@ const Calendar = ({
       date: string;
       time: string;
     }
-    const getId = (start: dateTime, end: dateTime) => {
-      return `${start.date}=${start.time}+${end.date}=${end.time}`;
+    const getId = (start: dateTime, end: dateTime, i: number) => {
+      return `${start.date}=${start.time}+${end.date}=${end.time}_${i}`;
     };
 
     const convertSchedule = (schedules: ISchedules) => {
       return schedules.reduce(
-        (acc: { [id: string]: ISchedule }, schedule: ISchedule) => {
-          const id = getId(schedule.start, schedule.end);
+        (acc: { [id: string]: ISchedule }, schedule: ISchedule, i: number) => {
+          const id = getId(schedule.start, schedule.end, i);
           acc[id] = schedule;
           return acc;
         },

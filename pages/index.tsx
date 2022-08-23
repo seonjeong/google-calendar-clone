@@ -33,8 +33,8 @@ const ScheduleCalendar: NextPage = ({}) => {
   const [isShowEdit, setIsShowEdit] = React.useState(false);
   const [selectedSchedule, setSelectedSchedule] = React.useState('');
 
-  const getId = (start: IDateTime, end: IDateTime) => {
-    return `${start.date}=${start.time}+${end.date}=${end.time}`;
+  const getId = (start: IDateTime, end: IDateTime, i: number) => {
+    return `${start.date}=${start.time}+${end.date}=${end.time}_${i}`;
   };
 
   const openEditShechedule = (id: string) => {

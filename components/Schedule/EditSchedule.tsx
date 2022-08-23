@@ -26,9 +26,11 @@ const EditSchedule = ({
   const dispatch = useDispatch();
   const { schedules } = useSelector(selectScheduleState);
 
-  const schedule: ISchedule = schedules.find((schedule: ISchedule) => {
-    return getId(schedule.start, schedule.end) === id;
-  }) || {
+  const schedule: ISchedule = schedules.find(
+    (schedule: ISchedule, i: number) => {
+      return getId(schedule.start, schedule.end, i) === id;
+    }
+  ) || {
     start: {
       date: '',
       time: '',
@@ -55,13 +57,15 @@ const EditSchedule = ({
   const [description, setDescription] = React.useState(schedule.description);
 
   const editSchedule = (id: string, editedSchedule: ISchedule): void => {
-    const _schedules: ISchedules = schedules.map((schedule: ISchedule) => {
-      if (getId(schedule.start, schedule.end) !== id) {
-        return schedule;
-      } else {
-        return editedSchedule;
+    const _schedules: ISchedules = schedules.map(
+      (schedule: ISchedule, i: number) => {
+        if (getId(schedule.start, schedule.end, i) !== id) {
+          return schedule;
+        } else {
+          return editedSchedule;
+        }
       }
-    });
+    );
     dispatch(
       setSchedule({
         schedules: _schedules,
@@ -71,13 +75,15 @@ const EditSchedule = ({
   };
 
   const deleteSchedule = (id: string) => {
-    const _schedules: ISchedules = schedules.filter((schedule: ISchedule) => {
-      if (getId(schedule.start, schedule.end) !== id) {
-        return true;
-      } else {
-        return false;
+    const _schedules: ISchedules = schedules.filter(
+      (schedule: ISchedule, i: number) => {
+        if (getId(schedule.start, schedule.end, i) !== id) {
+          return true;
+        } else {
+          return false;
+        }
       }
-    });
+    );
     dispatch(
       setSchedule({
         schedules: _schedules,
