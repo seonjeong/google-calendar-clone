@@ -195,7 +195,8 @@ const Calendar = ({
       return (
         <div className={'box'}>
           {item}
-          {daySchedules &&
+          {item &&
+            daySchedules &&
             daySchedules.map((daySchedule) => {
               const [[id, schedule]] = Object.entries(daySchedule);
 
