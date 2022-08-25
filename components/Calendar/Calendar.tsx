@@ -7,6 +7,7 @@ export interface CalendarProps {
   selectedDate: string;
   setPrevMonth: VoidFunction;
   setNextMonth: VoidFunction;
+  getId: VoidFunction;
   schedules: ISchedules;
   openEditShechedule: VoidFunction;
 }
@@ -15,6 +16,7 @@ const Calendar = ({
   selectedDate,
   setPrevMonth,
   setNextMonth,
+  getId,
   schedules,
   openEditShechedule,
 }: CalendarProps) => {
@@ -27,7 +29,13 @@ const Calendar = ({
 
   const totalCount = new Date(selected.year, selected.month, 0).getDate();
 
+  const maxMonthDate = new Date(selected.year, selected.month + 1, 0).getDate();
   const firstDateDay = new Date(selected.year, selected.month, 1).getDay();
+  const lastDateDay = new Date(
+    selected.year,
+    selected.month,
+    maxMonthDate
+  ).getDay();
 
   const getHeader = () => {
     return (
@@ -105,19 +113,37 @@ const Calendar = ({
     return daySchedules;
   };
 
+  const getDaysArr = (): (number | null)[] => {
+    let days: (number | null)[] = [];
+
+    Array.from({ length: 7 }, (_, i) => i).forEach((item) => {
+      if (firstDateDay === item) {
+        Array.from({ length: totalCount }, (_, i) => i).forEach((i) => {
+          days.push(i + 1);
+        });
+      }
+      days.push(null);
+    });
+
+    const startIndex = firstDateDay + maxMonthDate;
+
+    days.splice(startIndex, 7 - (lastDateDay + 1));
+
+    return days;
+  };
+
+  const days: (number | null)[] = getDaysArr();
+
   const getScheduleRangeFromConvert = (date: string, schedules: ISchedules) => {
     interface dateTime {
       date: string;
       time: string;
     }
-    const getId = (start: dateTime, end: dateTime) => {
-      return `${start.date}=${start.time}+${end.date}=${end.time}`;
-    };
 
     const convertSchedule = (schedules: ISchedules) => {
       return schedules.reduce(
-        (acc: { [id: string]: ISchedule }, schedule: ISchedule) => {
-          const id = getId(schedule.start, schedule.end);
+        (acc: { [id: string]: ISchedule }, schedule: ISchedule, i: number) => {
+          const id = getId(schedule.start, schedule.end, i);
           acc[id] = schedule;
           return acc;
         },
@@ -126,18 +152,68 @@ const Calendar = ({
     };
 
     const convertRange = () => {
-      return Array.from({ length: 31 }, (_, i) =>
-        moment(`${selected.year}-${selected.month + 1}-${i + 1}`).format(
-          'YYYY-MM-DD'
-        )
+      const dataObj = Array.from(
+        {
+          length: maxMonthDate,
+        },
+        (_, i) =>
+          moment(`${selected.year}-${selected.month + 1}-${i + 1}`).format(
+            'YYYY-MM-DD'
+          )
       ).reduce((acc: { [id: string]: string[] }, date: string) => {
-        acc[date] = Object.entries(convertSchedule(schedules))
-          .filter(([idDate, schedule]) => {
-            return getIsInclude(schedule.start.date, schedule.end.date, date);
-          })
-          .map(([idDate]) => idDate);
+        acc[date] = [];
         return acc;
       }, {});
+
+      Object.entries(convertSchedule(schedules)).forEach(
+        ([idDate, schedule]) => {
+          const startDate = Number(schedule.start.date.split('-')[2]);
+          const endDate = Number(schedule.end.date.split('-')[2]);
+          const scheduleDates = Array.from(
+            { length: Math.abs(endDate - startDate) + 1 },
+            (_, i) => {
+              return i + startDate;
+            }
+          )
+            .map((date) => {
+              const startMoment = moment(schedule.start.date);
+              const start = {
+                year: startMoment.year(),
+                month: startMoment.month(),
+                date: startMoment.date(),
+              };
+              const endMoment = moment(schedule.end.date);
+              const end = {
+                year: endMoment.year(),
+                month: endMoment.month(),
+                date: endMoment.date(),
+              };
+              const lastStartDate = new Date(
+                start.year,
+                start.month,
+                0
+              ).getDate();
+
+              if (date <= lastStartDate) {
+                return moment(
+                  `${start.year}-${start.month + 1}-${date}`
+                ).format('YYYY-MM-DD');
+              } else {
+                return moment(
+                  `${end.year}-${end.month + 1}-${date - lastStartDate}`
+                ).format('YYYY-MM-DD');
+              }
+            })
+            .reduce((acc, date) => {
+              console.log(date);
+              let idDates = acc[date] || [];
+              acc[date] = [...idDates, idDate];
+              return acc;
+            }, dataObj);
+        }
+      );
+
+      return dataObj;
     };
 
     const covertedSchedule = convertSchedule(schedules) || {};
@@ -151,17 +227,6 @@ const Calendar = ({
   };
 
   const getDays = () => {
-    let days: (number | null)[] = [];
-
-    Array.from({ length: 7 }, (_, i) => i).forEach((item) => {
-      if (firstDateDay === item) {
-        Array.from({ length: totalCount }, (_, i) => i).forEach((i) => {
-          days.push(i + 1);
-        });
-      }
-      days.push(null);
-    });
-
     return days.map((item: number | null) => {
       const daySchedules: { [date: string]: ISchedule }[] =
         item !== null
@@ -176,7 +241,8 @@ const Calendar = ({
       return (
         <div className={'box'}>
           {item}
-          {daySchedules &&
+          {item &&
+            daySchedules &&
             daySchedules.map((daySchedule) => {
               const [[id, schedule]] = Object.entries(daySchedule);
 

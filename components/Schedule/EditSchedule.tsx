@@ -1,56 +1,98 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 
 import { IDateTime, ISchedule, ISchedules } from '.';
 
+import {
+  selectScheduleState,
+  updateSchedule,
+  deleteSchedule,
+} from '../../store/modules/schedule';
+
 export interface EditScheduleProps {
   isShow: boolean;
   id: string;
-  schedules: ISchedules[];
   getId: VoidFunction;
-  editSchedule: VoidFunction;
-  deleteSchedule: VoidFunction;
+  setIsShowEdit: VoidFunction;
 }
 
 const EditSchedule = ({
   isShow,
   id,
-  schedules,
   getId,
-  editSchedule,
-  deleteSchedule,
+  setIsShowEdit,
 }: EditScheduleProps) => {
   if (!isShow) return null;
 
   if (!id) return null;
 
-  const schedule: ISchedule = schedules.find((schedule: ISchedule) => {
-    return getId(schedule.start, schedule.end) === id;
-  }) || {
-    start: {
-      date: '',
-      time: '',
-    },
-    end: {
-      date: '',
-      time: '',
-    },
-    title: '',
-    description: '',
-  };
+  const dispatch = useDispatch();
+  const { schedules } = useSelector(selectScheduleState);
 
-  const [title, setTtile] = React.useState(schedule.title);
+  const [title, setTitle] = React.useState('');
 
   const [start, setStart] = React.useState({
-    date: moment(schedule.start.date).format('YYYY-MM-DD'),
-    time: schedule.start.time,
+    date: '',
+    time: '',
   });
   const [end, setEnd] = React.useState({
-    date: moment(schedule.end.date).format('YYYY-MM-DD'),
-    time: schedule.end.time,
+    date: '',
+    time: '',
   });
 
-  const [description, setDescription] = React.useState(schedule.description);
+  const [description, setDescription] = React.useState('');
+
+  React.useEffect(() => {
+    const schedule: ISchedule = schedules.find(
+      (schedule: ISchedule, i: number) => {
+        return getId(schedule.start, schedule.end, i) === id;
+      }
+    ) || {
+      start: {
+        date: '',
+        time: '',
+      },
+      end: {
+        date: '',
+        time: '',
+      },
+      title: '',
+      description: '',
+    };
+
+    console.log(schedule);
+
+    setTitle(schedule.title);
+    setStart({
+      date: moment(schedule.start.date).format('YYYY-MM-DD'),
+      time: schedule.start.time,
+    });
+    setEnd({
+      date: moment(schedule.end.date).format('YYYY-MM-DD'),
+      time: schedule.end.time,
+    });
+    setDescription(schedule.description);
+  }, [id]);
+
+  const editScheduleEvent = (id: string, schedule: ISchedule): void => {
+    dispatch(
+      updateSchedule({
+        id,
+        schedule,
+      })
+    );
+    setIsShowEdit(false);
+  };
+
+  const deleteScheduleEvent = (id: string) => {
+    dispatch(
+      deleteSchedule({
+        id,
+      })
+    );
+    setIsShowEdit(false);
+  };
 
   return (
     <>
@@ -60,7 +102,7 @@ const EditSchedule = ({
         placeholder='title'
         value={title}
         onChange={(e) => {
-          setTtile(e.target.value);
+          setTitle(e.target.value);
         }}
       />
       <input
@@ -105,7 +147,7 @@ const EditSchedule = ({
       <button
         className='btn default-style btn-primary'
         onClick={() => {
-          editSchedule(id, {
+          editScheduleEvent(id, {
             title,
             description,
             start,
@@ -118,7 +160,7 @@ const EditSchedule = ({
       <button
         className='btn default-style btn-primary'
         onClick={() => {
-          deleteSchedule(id);
+          deleteScheduleEvent(id);
         }}
       >
         삭제

@@ -1,5 +1,8 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import moment from 'moment';
+
+import { selectScheduleState, addSchedule } from '../../store/modules/schedule';
 
 export interface IDateTime {
   date: string;
@@ -17,10 +20,12 @@ export type ISchedules = ISchedule[];
 
 export interface ScheduleProps {
   selectedDate: string;
-  addSchedule: (schedule: ISchedule) => VoidFunction;
 }
 
-const Schedule = ({ selectedDate, addSchedule }: ScheduleProps) => {
+const Schedule = ({ selectedDate }: ScheduleProps) => {
+  const { schedules } = useSelector(selectScheduleState);
+  const dispatch = useDispatch();
+
   const [title, setTtile] = React.useState('');
 
   const [start, setStart] = React.useState({
@@ -33,6 +38,19 @@ const Schedule = ({ selectedDate, addSchedule }: ScheduleProps) => {
   });
 
   const [description, setDescription] = React.useState('');
+
+  const addScheduleEvent = () => {
+    dispatch(
+      addSchedule({
+        schedule: {
+          title,
+          description,
+          start,
+          end,
+        },
+      })
+    );
+  };
   return (
     <>
       <input
@@ -86,12 +104,7 @@ const Schedule = ({ selectedDate, addSchedule }: ScheduleProps) => {
       <button
         className='btn default-style btn-primary'
         onClick={() => {
-          addSchedule({
-            title,
-            description,
-            start,
-            end,
-          });
+          addScheduleEvent();
         }}
       >
         추가
