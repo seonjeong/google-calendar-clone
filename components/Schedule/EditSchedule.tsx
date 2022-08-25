@@ -30,35 +30,50 @@ const EditSchedule = ({
   const dispatch = useDispatch();
   const { schedules } = useSelector(selectScheduleState);
 
-  const schedule: ISchedule = schedules.find(
-    (schedule: ISchedule, i: number) => {
-      return getId(schedule.start, schedule.end, i) === id;
-    }
-  ) || {
-    start: {
-      date: '',
-      time: '',
-    },
-    end: {
-      date: '',
-      time: '',
-    },
-    title: '',
-    description: '',
-  };
-
-  const [title, setTtile] = React.useState(schedule.title);
+  const [title, setTitle] = React.useState('');
 
   const [start, setStart] = React.useState({
-    date: moment(schedule.start.date).format('YYYY-MM-DD'),
-    time: schedule.start.time,
+    date: '',
+    time: '',
   });
   const [end, setEnd] = React.useState({
-    date: moment(schedule.end.date).format('YYYY-MM-DD'),
-    time: schedule.end.time,
+    date: '',
+    time: '',
   });
 
-  const [description, setDescription] = React.useState(schedule.description);
+  const [description, setDescription] = React.useState('');
+
+  React.useEffect(() => {
+    const schedule: ISchedule = schedules.find(
+      (schedule: ISchedule, i: number) => {
+        return getId(schedule.start, schedule.end, i) === id;
+      }
+    ) || {
+      start: {
+        date: '',
+        time: '',
+      },
+      end: {
+        date: '',
+        time: '',
+      },
+      title: '',
+      description: '',
+    };
+
+    console.log(schedule);
+
+    setTitle(schedule.title);
+    setStart({
+      date: moment(schedule.start.date).format('YYYY-MM-DD'),
+      time: schedule.start.time,
+    });
+    setEnd({
+      date: moment(schedule.end.date).format('YYYY-MM-DD'),
+      time: schedule.end.time,
+    });
+    setDescription(schedule.description);
+  }, [id]);
 
   const editScheduleEvent = (id: string, schedule: ISchedule): void => {
     dispatch(
@@ -87,7 +102,7 @@ const EditSchedule = ({
         placeholder='title'
         value={title}
         onChange={(e) => {
-          setTtile(e.target.value);
+          setTitle(e.target.value);
         }}
       />
       <input
