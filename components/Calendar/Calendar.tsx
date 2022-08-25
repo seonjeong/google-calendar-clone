@@ -152,7 +152,7 @@ const Calendar = ({
     };
 
     const convertRange = () => {
-      return Array.from(
+      const dataObj = Array.from(
         {
           length: maxMonthDate,
         },
@@ -161,13 +161,37 @@ const Calendar = ({
             'YYYY-MM-DD'
           )
       ).reduce((acc: { [id: string]: string[] }, date: string) => {
-        acc[date] = Object.entries(convertSchedule(schedules))
-          .filter(([idDate, schedule]) => {
-            return getIsInclude(schedule.start.date, schedule.end.date, date);
-          })
-          .map(([idDate]) => idDate);
+        acc[date] = [];
         return acc;
       }, {});
+
+      Object.entries(convertSchedule(schedules)).forEach(
+        ([idDate, schedule]) => {
+          const startDate = Number(schedule.start.date.split('-')[2]);
+          const endDate = Number(schedule.end.date.split('-')[2]);
+          const scheduleDates = Array.from(
+            { length: Math.abs(endDate - startDate) + 1 },
+            (_, i) => {
+              return i + startDate;
+            }
+          )
+            .map((date) => {
+              return moment(
+                `${schedule.start.date.split('-')[0]}-${
+                  schedule.start.date.split('-')[1]
+                }-${date}`
+              ).format('YYYY-MM-DD');
+            })
+            .reduce((acc, date) => {
+              console.log(date);
+              let idDates = acc[date] || [];
+              acc[date] = [...idDates, idDate];
+              return acc;
+            }, dataObj);
+        }
+      );
+
+      return dataObj;
     };
 
     const covertedSchedule = convertSchedule(schedules) || {};
