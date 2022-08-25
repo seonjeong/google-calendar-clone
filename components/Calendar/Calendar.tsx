@@ -176,11 +176,33 @@ const Calendar = ({
             }
           )
             .map((date) => {
-              return moment(
-                `${schedule.start.date.split('-')[0]}-${
-                  schedule.start.date.split('-')[1]
-                }-${date}`
-              ).format('YYYY-MM-DD');
+              const startMoment = moment(schedule.start.date);
+              const start = {
+                year: startMoment.year(),
+                month: startMoment.month(),
+                date: startMoment.date(),
+              };
+              const endMoment = moment(schedule.end.date);
+              const end = {
+                year: endMoment.year(),
+                month: endMoment.month(),
+                date: endMoment.date(),
+              };
+              const lastStartDate = new Date(
+                start.year,
+                start.month,
+                0
+              ).getDate();
+
+              if (date <= lastStartDate) {
+                return moment(
+                  `${start.year}-${start.month + 1}-${date}`
+                ).format('YYYY-MM-DD');
+              } else {
+                return moment(
+                  `${end.year}-${end.month + 1}-${date - lastStartDate}`
+                ).format('YYYY-MM-DD');
+              }
             })
             .reduce((acc, date) => {
               console.log(date);
