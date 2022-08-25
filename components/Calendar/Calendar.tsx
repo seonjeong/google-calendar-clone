@@ -113,6 +113,27 @@ const Calendar = ({
     return daySchedules;
   };
 
+  const getDaysArr = (): (number | null)[] => {
+    let days: (number | null)[] = [];
+
+    Array.from({ length: 7 }, (_, i) => i).forEach((item) => {
+      if (firstDateDay === item) {
+        Array.from({ length: totalCount }, (_, i) => i).forEach((i) => {
+          days.push(i + 1);
+        });
+      }
+      days.push(null);
+    });
+
+    const startIndex = firstDateDay + maxMonthDate;
+
+    days.splice(startIndex, 7 - (lastDateDay + 1));
+
+    return days;
+  };
+
+  const days: (number | null)[] = getDaysArr();
+
   const getScheduleRangeFromConvert = (date: string, schedules: ISchedules) => {
     interface dateTime {
       date: string;
@@ -160,21 +181,6 @@ const Calendar = ({
   };
 
   const getDays = () => {
-    let days: (number | null)[] = [];
-
-    Array.from({ length: 7 }, (_, i) => i).forEach((item) => {
-      if (firstDateDay === item) {
-        Array.from({ length: totalCount }, (_, i) => i).forEach((i) => {
-          days.push(i + 1);
-        });
-      }
-      days.push(null);
-    });
-
-    const startIndex = firstDateDay + maxMonthDate;
-
-    days.splice(startIndex, 7 - (lastDateDay + 1));
-
     return days.map((item: number | null) => {
       const daySchedules: { [date: string]: ISchedule }[] =
         item !== null
